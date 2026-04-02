@@ -17,6 +17,17 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Legal consultation backend is live 🚀",
+    endpoints: {
+      api: "/api",
+      health: "/health",
+    },
+  });
+});
+
 // Routes
 app.use("/health", healthRoutes);
 app.use("/api", apiRoutes);

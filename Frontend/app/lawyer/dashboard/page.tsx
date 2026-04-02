@@ -1,41 +1,48 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Sidebar } from '@/components/Sidebar';
-import { Navbar } from '@/components/Navbar';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { useState } from 'react';
 import {
-  BarChart3,
-  Users,
-  Clock,
-  Star,
+  Calendar,
+  Clock3,
   MessageSquare,
   TrendingUp,
+  UserRound,
+  Wallet,
 } from 'lucide-react';
+
+import { Navbar } from '@/components/Navbar';
+import { Sidebar } from '@/components/Sidebar';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const clientRequests = [
   {
     id: '1',
     clientName: 'Alice Smith',
-    subject: 'Contract Review',
+    subject: 'Contract review before signing',
     date: 'Today, 9:30 AM',
-    priority: 'high',
+    priority: 'High',
   },
   {
     id: '2',
     clientName: 'Bob Johnson',
-    subject: 'Legal Consultation',
+    subject: 'Founders agreement guidance',
     date: 'Today, 11:00 AM',
-    priority: 'medium',
+    priority: 'Medium',
   },
   {
     id: '3',
     clientName: 'Carol Davis',
-    subject: 'Document Preparation',
+    subject: 'Employment notice dispute',
     date: 'Tomorrow, 2:00 PM',
-    priority: 'low',
+    priority: 'Low',
   },
 ];
 
@@ -43,18 +50,18 @@ const upcomingConsultations = [
   {
     id: '1',
     clientName: 'Alice Smith',
-    date: 'March 15, 2024',
+    date: 'Today',
     time: '10:00 AM',
     duration: '30 mins',
-    fee: '$75',
+    fee: '₹2,500',
   },
   {
     id: '2',
     clientName: 'David Miller',
-    date: 'March 17, 2024',
+    date: 'Tomorrow',
     time: '3:00 PM',
     duration: '1 hour',
-    fee: '$150',
+    fee: '₹5,000',
   },
 ];
 
@@ -63,210 +70,232 @@ export default function LawyerDashboard() {
 
   const stats = [
     {
-      icon: Users,
-      label: 'Total Clients',
+      icon: UserRound,
+      label: 'Active Clients',
       value: '24',
-      color: 'text-primary',
+      note: '7 first-time consultations this week',
     },
     {
       icon: MessageSquare,
-      label: 'Active Messages',
-      value: '8',
-      color: 'text-accent',
+      label: 'Unread Messages',
+      value: '08',
+      note: '3 high-priority threads',
     },
     {
-      icon: Clock,
-      label: 'Hours This Month',
+      icon: Clock3,
+      label: 'Hours Booked',
       value: '42',
-      color: 'text-secondary',
+      note: 'Strong utilization this month',
     },
     {
-      icon: TrendingUp,
-      label: 'Monthly Earnings',
-      value: '$6,300',
-      color: 'text-primary',
+      icon: Wallet,
+      label: 'Projected Earnings',
+      value: '₹1.2L',
+      note: 'Up 18% vs last month',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="page-shell">
       <Navbar
         isLoggedIn
-        userName="Dr. Sarah Johnson"
+        userName="Sarah Johnson"
         userRole="lawyer"
-        onMenuToggle={(open) => setSidebarCollapsed(!open)}
+        onMenuToggle={(open) => setSidebarCollapsed(open)}
       />
-      <div className="flex">
+
+      <div className="flex min-h-[calc(100vh-72px)]">
         <Sidebar
           userRole="lawyer"
           isCollapsed={sidebarCollapsed}
           onToggleCollapse={setSidebarCollapsed}
         />
 
-        <main className="flex-1 p-4 md:p-8">
-          <div className="max-w-6xl mx-auto space-y-8">
-            {/* Header */}
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">
-                Practice Dashboard
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                Welcome back! Here&apos;s your practice overview for March.
-              </p>
-            </div>
+        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8">
+            <section className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+              <Card className="overflow-hidden border-white/70 bg-[linear-gradient(135deg,rgba(15,23,42,0.95),rgba(30,64,175,0.92),rgba(96,165,250,0.82))] p-0 text-white">
+                <CardContent className="grid gap-8 px-6 py-8 md:grid-cols-[1fr_0.72fr]">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/65">
+                      Practice dashboard
+                    </p>
+                    <h1 className="mt-3 text-4xl font-semibold">
+                      Run a premium legal practice with calmer workflows.
+                    </h1>
+                    <p className="mt-4 max-w-2xl text-base leading-7 text-white/78">
+                      Manage requests, stay responsive, and keep your client
+                      experience polished from first question through final advice.
+                    </p>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      <Button className="bg-white text-slate-950 hover:bg-white/92">
+                        Open inbox
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="border-white/20 bg-white/10 text-white hover:bg-white/16"
+                      >
+                        Update availability
+                      </Button>
+                    </div>
+                  </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.map((stat, index) => {
+                  <div className="rounded-[28px] border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
+                    <p className="text-sm text-white/65">Today&apos;s momentum</p>
+                    <div className="mt-5 grid gap-3">
+                      {[
+                        { label: 'Pending requests', value: '11' },
+                        { label: 'Booked consultations', value: '06' },
+                        { label: 'Conversion rate', value: '72%' },
+                      ].map((item) => (
+                        <div
+                          key={item.label}
+                          className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/8 px-4 py-3"
+                        >
+                          <span className="text-sm text-white/72">{item.label}</span>
+                          <span className="text-lg font-semibold">{item.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="p-6">
+                <CardHeader className="px-0 pb-0">
+                  <CardTitle>Growth snapshot</CardTitle>
+                  <CardDescription>
+                    Your practice is trending upward this month
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="px-0 pt-6">
+                  <div className="rounded-[28px] border border-border/60 bg-slate-50/80 p-5">
+                    <div className="flex items-center gap-3 text-primary">
+                      <TrendingUp className="size-5" />
+                      <span className="text-sm font-semibold uppercase tracking-[0.2em]">
+                        Performance
+                      </span>
+                    </div>
+                    <p className="mt-4 text-4xl font-semibold text-foreground">+18%</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      Faster response times and stronger booking conversion compared with last month.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <Card key={index} className="p-6">
+                  <Card key={stat.label} className="p-6">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">
-                          {stat.label}
-                        </p>
-                        <p className="text-2xl font-bold text-foreground mt-2">
+                        <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                        <p className="mt-3 text-4xl font-semibold text-foreground">
                           {stat.value}
                         </p>
+                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                          {stat.note}
+                        </p>
                       </div>
-                      <Icon className={`w-8 h-8 ${stat.color}`} />
+                      <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                        <Icon className="size-5" />
+                      </div>
                     </div>
                   </Card>
                 );
               })}
-            </div>
+            </section>
 
-            {/* Client Requests & Messages */}
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Pending Requests */}
-              <div>
-                <div className="flex justify-between items-center mb-6">
+            <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+              <Card className="p-6">
+                <CardHeader className="flex-row items-start justify-between px-0">
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground">
-                      Client Requests
-                    </h2>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      New inquiries awaiting response
-                    </p>
+                    <CardTitle>Client requests</CardTitle>
+                    <CardDescription>
+                      Fresh opportunities requiring a timely response
+                    </CardDescription>
                   </div>
                   <Button variant="outline" asChild>
-                    <Link href="/lawyer/messages">View All</Link>
+                    <Link href="/lawyer/dashboard">Refresh board</Link>
                   </Button>
-                </div>
-
-                <div className="space-y-3">
+                </CardHeader>
+                <CardContent className="space-y-4 px-0 pt-6">
                   {clientRequests.map((request) => (
-                    <Card key={request.id} className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-foreground">
+                    <div
+                      key={request.id}
+                      className="rounded-[24px] border border-border/60 bg-slate-50/75 px-5 py-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-lg font-semibold text-foreground">
                             {request.clientName}
-                          </h3>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          </p>
+                          <p className="mt-1 text-sm text-muted-foreground">
                             {request.subject}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-2">
-                            {request.date}
-                          </p>
+                          <p className="mt-3 text-sm font-medium text-primary">{request.date}</p>
                         </div>
-                        <span
-                          className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                            request.priority === 'high'
-                              ? 'bg-destructive/10 text-destructive'
-                              : request.priority === 'medium'
-                                ? 'bg-accent/10 text-accent'
-                                : 'bg-muted text-muted-foreground'
-                          }`}
-                        >
+                        <span className="rounded-full bg-primary/8 px-3 py-1 text-xs font-semibold text-primary">
                           {request.priority}
                         </span>
                       </div>
-                      <Button
-                        size="sm"
-                        className="mt-3 w-full bg-primary hover:bg-primary/90"
-                      >
-                        Respond
-                      </Button>
-                    </Card>
+                      <div className="mt-4 flex gap-3">
+                        <Button className="flex-1">Respond now</Button>
+                        <Button variant="outline" className="flex-1">
+                          Save for later
+                        </Button>
+                      </div>
+                    </div>
                   ))}
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              {/* Upcoming Consultations */}
-              <div>
-                <div className="flex justify-between items-center mb-6">
+              <Card className="p-6">
+                <CardHeader className="flex-row items-start justify-between px-0">
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground">
-                      Upcoming Consultations
-                    </h2>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      Scheduled sessions
-                    </p>
+                    <CardTitle>Upcoming consultations</CardTitle>
+                    <CardDescription>
+                      Your scheduled client sessions for the next 48 hours
+                    </CardDescription>
                   </div>
                   <Button variant="outline" asChild>
-                    <Link href="/lawyer/availability">Manage Calendar</Link>
+                    <Link href="/lawyer/dashboard">Manage calendar</Link>
                   </Button>
-                </div>
-
-                <div className="space-y-3">
+                </CardHeader>
+                <CardContent className="space-y-4 px-0 pt-6">
                   {upcomingConsultations.map((consultation) => (
-                    <Card key={consultation.id} className="p-4">
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-foreground">
+                    <div
+                      key={consultation.id}
+                      className="rounded-[24px] border border-border/60 bg-slate-50/75 px-5 py-5"
+                    >
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-lg font-semibold text-foreground">
                             {consultation.clientName}
-                          </h3>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {consultation.date}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {consultation.time} • {consultation.duration}
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {consultation.date} at {consultation.time}
                           </p>
+                          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-medium text-muted-foreground">
+                            <Calendar className="size-3.5" />
+                            {consultation.duration}
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-bold text-primary">
+                        <div className="sm:text-right">
+                          <p className="text-2xl font-semibold text-foreground">
                             {consultation.fee}
                           </p>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="mt-2"
-                          >
-                            Join
-                          </Button>
+                          <Button className="mt-3">Join consultation</Button>
                         </div>
                       </div>
-                    </Card>
+                    </div>
                   ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                Quick Actions
-              </h3>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <Button
-                  variant="outline"
-                  className="justify-start"
-                  asChild
-                >
-                  <Link href="/lawyer/availability">Update Availability</Link>
-                </Button>
-                <Button variant="outline" className="justify-start" asChild>
-                  <Link href="/lawyer/profile">Edit Profile</Link>
-                </Button>
-                <Button variant="outline" className="justify-start" asChild>
-                  <Link href="/lawyer/messages">Review Messages</Link>
-                </Button>
-                <Button variant="outline" className="justify-start" asChild>
-                  <Link href="/lawyer/settings">Settings</Link>
-                </Button>
-              </div>
-            </Card>
+                </CardContent>
+              </Card>
+            </section>
           </div>
         </main>
       </div>

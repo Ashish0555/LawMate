@@ -2,6 +2,9 @@ const db = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const DEMO_CLIENT_EMAIL = "demo-client@legalconsult.local";
+const DEMO_CLIENT_PASSWORD = "demo-client-password";
+
 // SIGNUP
 exports.signup = async (req, res) => {
   try {
@@ -25,6 +28,46 @@ exports.signup = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Signup failed" });
+  }
+};
+
+// DEMO CLIENT
+exports.getOrCreateDemoClient = async (req, res) => {
+  try {
+    const existingUser = await db.query(
+      "SELECT id, email, role FROM users WHERE email = $1",
+      [DEMO_CLIENT_EMAIL]
+    );
+
+    let user = existingUser.rows[0];
+
+    if (!user) {
+      const hashedPassword = await bcrypt.hash(DEMO_CLIENT_PASSWORD, 10);
+      const insertedUser = await db.query(
+        `
+          INSERT INTO users (email, password_hash, role)
+          VALUES ($1, $2, $3)
+          RETURNING id, email, role;
+        `,
+        [DEMO_CLIENT_EMAIL, hashedPassword, "client"]
+      );
+
+      user = insertedUser.rows[0];
+    }
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      "secret123",
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      token,
+      user,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to prepare demo client" });
   }
 };
 

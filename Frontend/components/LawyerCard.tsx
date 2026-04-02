@@ -1,9 +1,10 @@
 'use client';
 
+import { MessageSquare, ShieldCheck, Star } from 'lucide-react';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, MessageSquare } from 'lucide-react';
 
 interface LawyerCardProps {
   id: string;
@@ -18,7 +19,6 @@ interface LawyerCardProps {
 }
 
 export function LawyerCard({
-  id,
   name,
   specialty,
   rating,
@@ -29,54 +29,56 @@ export function LawyerCard({
   onViewProfile,
 }: LawyerCardProps) {
   return (
-    <Card className="p-4 hover:shadow-lg transition-shadow">
-      <div className="flex gap-4">
-        <Avatar className="w-16 h-16 flex-shrink-0">
-          <AvatarImage src={image} alt={name} />
-          <AvatarFallback className="bg-primary text-primary-foreground text-lg">
-            {name
-              .split(' ')
-              .map((n) => n[0])
-              .join('')}
-          </AvatarFallback>
-        </Avatar>
+    <Card className="overflow-hidden border-white/70 p-0 transition-transform duration-300 hover:-translate-y-1">
+      <div className="flex flex-col gap-6 p-6 md:flex-row md:items-center">
+        <div className="flex items-center gap-4">
+          <Avatar className="size-16 ring-4 ring-primary/10">
+            <AvatarImage src={image} alt={name} />
+            <AvatarFallback className="bg-primary text-base font-semibold text-primary-foreground">
+              {name
+                .split(' ')
+                .map((segment) => segment[0])
+                .join('')}
+            </AvatarFallback>
+          </Avatar>
 
-        <div className="flex-1">
-          <h3 className="font-semibold text-foreground">{name}</h3>
-          <p className="text-sm text-muted-foreground mb-2">{specialty}</p>
-
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 fill-accent text-accent" />
-              <span className="text-sm font-medium">{rating.toFixed(1)}</span>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-foreground">{name}</h3>
+              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                Verified
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground">
-              ({reviewCount} reviews)
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <p className="font-bold text-primary">${hourlyRate}/hr</p>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onMessage}
-                className="gap-1"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span className="hidden sm:inline">Message</span>
-              </Button>
-              <Button
-                size="sm"
-                onClick={onViewProfile}
-                className="bg-primary hover:bg-primary/90"
-              >
-                View Profile
-              </Button>
+            <p className="text-sm text-muted-foreground">{specialty}</p>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1 font-medium text-foreground">
+                <Star className="size-4 fill-amber-400 text-amber-400" />
+                {rating.toFixed(1)}
+              </span>
+              <span>{reviewCount} reviews</span>
+              <span className="inline-flex items-center gap-1">
+                <ShieldCheck className="size-4 text-emerald-500" />
+                Secure consultation
+              </span>
             </div>
           </div>
         </div>
+
+        <div className="md:ml-auto md:text-right">
+          <p className="text-sm text-muted-foreground">Starting from</p>
+          <p className="mt-1 text-3xl font-semibold text-foreground">₹{hourlyRate}</p>
+          <p className="text-sm text-muted-foreground">per session</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 border-t border-border/60 bg-slate-50/70 px-6 py-4 sm:flex-row">
+        <Button variant="outline" className="sm:flex-1" onClick={onMessage}>
+          <MessageSquare className="size-4" />
+          Message
+        </Button>
+        <Button className="sm:flex-1" onClick={onViewProfile}>
+          View Profile
+        </Button>
       </div>
     </Card>
   );

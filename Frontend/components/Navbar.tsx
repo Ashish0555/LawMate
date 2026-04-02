@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Menu, X, LogOut, Home } from 'lucide-react';
 import { useState } from 'react';
+import { Bell, Home, LogOut, Menu, ShieldCheck, X } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface NavbarProps {
   isLoggedIn?: boolean;
@@ -12,6 +14,12 @@ interface NavbarProps {
   onLogout?: () => void;
   onMenuToggle?: (open: boolean) => void;
 }
+
+const guestLinks = [
+  { href: '#features', label: 'Features' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#trust', label: 'Trust' },
+];
 
 export function Navbar({
   isLoggedIn = false,
@@ -22,171 +30,136 @@ export function Navbar({
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const links = isLoggedIn
+    ? userRole === 'lawyer'
+      ? [
+          { href: '/lawyer/dashboard', label: 'Dashboard' },
+          { href: '/lawyer/dashboard', label: 'Requests' },
+          { href: '/lawyer/dashboard', label: 'Practice' },
+        ]
+      : [
+          { href: '/client/dashboard', label: 'Dashboard' },
+          { href: '/booking', label: 'Bookings' },
+          { href: '/client/dashboard', label: 'Activity' },
+        ]
+    : guestLinks;
+
   const toggleMenu = () => {
-    const newState = !mobileMenuOpen;
-    setMobileMenuOpen(newState);
-    onMenuToggle?.(newState);
+    const nextOpen = !mobileMenuOpen;
+    setMobileMenuOpen(nextOpen);
+    onMenuToggle?.(nextOpen);
   };
 
   return (
-    <nav className="bg-card border-b border-border sticky top-0 z-40 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">
-              L
-            </div>
-            <span className="hidden sm:inline font-bold text-foreground">
-              LegalConsult
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {isLoggedIn ? (
-              <>
-                <Link
-                  href={userRole === 'lawyer' ? '/lawyer/dashboard' : '/client/dashboard'}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/chat"
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
-                >
-                  Messages
-                </Link>
-                <Link
-                  href="/booking"
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
-                >
-                  Booking
-                </Link>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">{userName}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onLogout}
-                    className="gap-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="#features"
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
-                >
-                  Features
-                </Link>
-                <Link
-                  href="#how-it-works"
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
-                >
-                  How It Works
-                </Link>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button size="sm" className="bg-primary hover:bg-primary/90" asChild>
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </>
-            )}
+    <nav className="sticky top-0 z-40 border-b border-white/60 bg-white/75 backdrop-blur-xl">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="group flex items-center gap-3">
+          <div className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#2455ff,#7ba8ff)] text-base font-bold text-white shadow-[0_18px_40px_-20px_rgba(36,85,255,0.9)] transition-transform duration-300 group-hover:-translate-y-0.5">
+            L
           </div>
+          <div>
+            <p className="font-heading text-lg font-semibold text-foreground">LawMate</p>
+            <p className="text-xs text-muted-foreground">Legal help, beautifully delivered</p>
+          </div>
+        </Link>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden p-2 hover:bg-muted rounded-lg transition"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-6 h-6 text-foreground" />
-            ) : (
-              <Menu className="w-6 h-6 text-foreground" />
-            )}
-          </button>
+        <div className="hidden items-center gap-3 md:flex">
+          {links.map((link) => (
+            <Link
+              key={`${link.href}-${link.label}`}
+              href={link.href}
+              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {isLoggedIn ? (
+            <div className="ml-3 flex items-center gap-3">
+              <button
+                className="glass-border flex size-10 items-center justify-center rounded-full text-muted-foreground transition-transform hover:-translate-y-0.5 hover:text-foreground"
+                aria-label="Notifications"
+              >
+                <Bell className="size-4" />
+              </button>
+              <div className="glass-border hidden items-center gap-3 rounded-full px-3 py-2 lg:flex">
+                <div className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  {(userName ?? 'U').slice(0, 1)}
+                </div>
+                <div className="pr-2">
+                  <p className="text-sm font-semibold text-foreground">{userName}</p>
+                  <p className="text-xs capitalize text-muted-foreground">{userRole} workspace</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" onClick={onLogout}>
+                <LogOut className="size-4" />
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <div className="ml-3 flex items-center gap-3">
+              <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 lg:flex">
+                <ShieldCheck className="size-4" />
+                Verified lawyers online now
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="#features">Explore</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/booking">Book a Call</Link>
+              </Button>
+            </div>
+          )}
         </div>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border py-4 space-y-3">
+        <button
+          onClick={toggleMenu}
+          className="flex size-11 items-center justify-center rounded-full border border-border/70 bg-white/80 text-foreground transition md:hidden"
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
+
+      {mobileMenuOpen ? (
+        <div className="border-t border-white/70 bg-white/90 px-4 py-4 md:hidden">
+          <div className="space-y-2">
+            {links.map((link) => (
+              <Link
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-slate-50"
+              >
+                <span>{link.label}</span>
+                <Home className="size-4 text-muted-foreground" />
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-4 flex flex-col gap-2">
             {isLoggedIn ? (
-              <>
-                <Link
-                  href={userRole === 'lawyer' ? '/lawyer/dashboard' : '/client/dashboard'}
-                  className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/chat"
-                  className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Messages
-                </Link>
-                <Link
-                  href="/booking"
-                  className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Booking
-                </Link>
-                <button
-                  onClick={() => {
-                    onLogout?.();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm font-medium text-destructive hover:bg-muted rounded transition flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </button>
-              </>
+              <Button variant="outline" onClick={onLogout} className="justify-center">
+                <LogOut className="size-4" />
+                Logout
+              </Button>
             ) : (
               <>
-                <Link
-                  href="#features"
-                  className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Features
-                </Link>
-                <Link
-                  href="#how-it-works"
-                  className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  How It Works
-                </Link>
-                <Link
-                  href="/login"
-                  className="block px-4 py-2 text-sm font-medium text-primary hover:bg-primary/5 rounded transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/signup"
-                  className="block px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
+                <Button variant="outline" asChild>
+                  <Link href="#features" onClick={() => setMobileMenuOpen(false)}>
+                    Explore
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/booking" onClick={() => setMobileMenuOpen(false)}>
+                    Book a Call
+                  </Link>
+                </Button>
               </>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      ) : null}
     </nav>
   );
 }

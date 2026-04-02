@@ -29,7 +29,7 @@ export function Ask49Banner() {
             className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto group"
             asChild
           >
-            <Link href="/ask-quick-question">
+            <Link href="/">
               Ask Now for ₹49
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
